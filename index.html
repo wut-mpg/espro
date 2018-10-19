@@ -1,0 +1,23 @@
+---
+layout: default
+title: Home
+---
+
+<div class="posts">
+  {% assign labs = site.categories.metalab | sort: "lab"  %}
+  {% for post in labs %}
+  <article class="post" style="margin-bottom: 1em">
+    {% if post.ready %}
+    <h2 class="post-title">
+      <a href="{{site.baseurl}}{{post.url}}">E{{post.lab}}: {{ post.title }}</a>
+    </h2>
+    {% else %}
+    <h2 class="post-title" style="color: #9a9a9a">
+      E{{post.lab}}: {{ post.title }}
+    </h2>
+    {% endif %}
+
+    <time datetime="{{ post.date | date_to_xmlschema }}" class="post-date">{{ post.date | date_to_string }}</time>
+  </article>
+  {% endfor %}
+</div>
