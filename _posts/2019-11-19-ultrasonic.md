@@ -1,45 +1,42 @@
 ---
 layout: task
-title: Transformata okienkowa
+title: Windowed transform
 category: lab
 lab: 4
 task: 2
-brief: Zastosowanie STFT do analizy sygnałów o charakterystyce zmiennej w czasie.
+brief: Using STFT to analyze signals changing in time
 ---
 
 {% comment %} https://www.freesound.org/s/177268/ {% endcomment %}
 
 ## Wprowadzenie
 
-Przy sygnałach o charakterystykach zmiennych w czasie (takich jak chociażby mowa) analiza widma całego nagrania będzie niosła jedynie informacje 
-o całkowitym udziale danych częstotliwości w nagraniu. Przy analizie mowy (a ogólniej dźwięku, ale też innych sygnałów) istotne są natomiast
-pewne zależności czasowe oraz sekwencje występowania konkretnych częstotliwości. W tego typu zadaniach, zamiast analizować cały sygnał, dzieli
-się go na ramki o ustalonej długości oraz stopniu nachodzenia na siebie, a następnie dla każdej z nich wyznacza się transformatę Fouriera.
+Signals that are not periodic (e.g. speech) are hard to analyze using whole recording to calculate fft. To distinguish particular parts of the speech, words and even single phonems, one has to apply Fourier transform to smaller fragments of the recording. Input signal can be split into short windows, and for each of them different fft can be calculated. Windows can have length appropriate to the application (shorter if we want to detect small events) or longer (if we need better frequency resolution). Final result can be presented in the form of a spectrogram.
 
-## Wyznaczanie spektrogramów
+## Calculating spectrograms
 
-Proszę pobrać przykładowy [plik audio]({{ site.baseurl }}/public/l2/funf.wav) i załadować go do tablicy ([audioread](https://www.mathworks.com/help/matlab/ref/audioread.html)). 
-Plik zawiera nagranie jednego słowa (*fünf*) wypowiedzianego przez kobietę. 
+
+
+Download sample [audio file]({{ site.baseurl }}/public/l2/funf.wav) and load it ([audioread](https://www.mathworks.com/help/matlab/ref/audioread.html)). 
+It is a single word (*fünf*) recorded.
 
 {% highlight matlab %}
-% x - nagranie
-% Fs - częstotliwość próbkowania 
+% x - recorded samples
+% Fs - sampling rate
 [x, Fs] = audioread('funf.wav');
 {% endhighlight %}
 
 ![]({{ site.baseurl }}/public/l2/funf.png)
 
-Po załadowaniu proszę wyznaczyć i wyświetlić spektrogram ([spectrogram](https://www.mathworks.com/help/signal/ref/spectrogram.html)). Zmieniając odpowiednio parametry
-proszę zaobserwować związek pomiędzy wielkością okna a rozdzielczością wyznaczonego spektrum sygnału dla pojedynczego okna. Proszę spróbować uzyskać wyniki również dla
-skrajnych wartości parametrów.
+After loading the file calculate and show the [spectrogram](https://www.mathworks.com/help/signal/ref/spectrogram.html). Manipulate the parameters (window size, overlap) and observe the differences in the result.
 
 {% highlight matlab %}
-% x - sygnał 
-% 128 - długość okna analizy
-% 64 - nakładanie pomiędzy kolejnymi oknami
-% [] - ilość punktów FFT na okno (domyślnie)
-% Fs - częstotliwość próbkowania sygnału
-% 'yaxis' - czętotliwości na osi y, czas na osi x
+% x - signal
+% 128 - window size
+% 64 - window overlap
+% [] - number of FFT points per window (default)
+% Fs - sampling rate
+% 'yaxis' - put frequency on y axis, time on x
 spectrogram(x, 128, 64, [], Fs, 'yaxis');
 {% endhighlight %}
 
@@ -48,29 +45,17 @@ spectrogram(x, 128, 64, [], Fs, 'yaxis');
 ![]({{ site.baseurl }}/public/l2/s_1024.png)
 
 
-## Analiza sygnału z sensora ultradźwiękowego
+## Ultrasonic sensor analysis
 
-Jedną z metod pomiaru odległości do przedmiotów jest wykorzystanie sensorów ultradźwiękowych (tzw. *ping*). Wysyłają one krótką serię impulsów o częstotliwości
-ultradźwiękowej, a następnie badając czas po jakim ich echo dotrze do odbiornika określają odległość do przeszkody. 
+One of the methods for obstacle detection (and distance measurement in general) is using ultrasonic sensors (so called *ping* sensors). They send short burst of high frequency *pings* and detect echo reflected by obstacles. By calculating the time from sending ping to receiving it the distance can be measured.
 
-Dla czujnika wysyłającego 8 impulsów o długości 1ms i częstotliwości 40kHz proszę wyznaczyć odległość do przeszkody. Proszę wykorzystać przykładowy 
-[zarejestrowany sygnał]({{ site.baseurl }}/public/l2/output.txt). Sygnał ma częstotliwość próbkowania 200kHz. 
+For sensor sending 8 1ms pings (with 40kHz base frequency) calculate the distance to the obstacle from registered echo recording. Use [simulated sample]({{ site.baseurl }}/public/l2/output.txt). Recording has 200kHz sampling rate.
 
-Sygnał *ping*:
+*Ping* signal:
 ![]({{ site.baseurl }}/public/l2/4_1.png)
 ![]({{ site.baseurl }}/public/l2/4_2.png)
 
-Zarejestrowane *echo*:
+Registered *echo*:
 ![]({{ site.baseurl }}/public/l2/4_3.png)
 
-## Filtry
-
-Proszę przefiltrować sygnał symulowanego sensora ultradźwiękowego (ten sam, co w poprzednim zadaniu)
-z użyciem jednego z filtrów opisanych na wykładzie. Proszę przygotować funkcję wyznaczającą
-parametry filtru dla zadanej częstotliwości odcięcia, częstotliwości próbkowania oraz stromości
-zbocza. 
-
-Wyniki proszę zaprezentować w postaci odfiltrowanego sygnału (w dziedzinie czasu) oraz jego
-spektrogramu (w celu oceny jakości filtracji częstotliwości). Po przefiltrowaniu sygnału proszę
-wyznaczyć moment powrotu echa i na jego podstawie określić odległość do przeszkody.
-
+Calculate spectrogram for the recording, find the echo location and calculate the signal travel time. From it calculate the distance. Assume speed of sound to be 343 *m/s*.
