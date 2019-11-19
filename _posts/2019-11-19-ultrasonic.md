@@ -59,3 +59,7 @@ Registered *echo*:
 ![]({{ site.baseurl }}/public/l2/4_3.png)
 
 Calculate spectrogram for the recording, find the echo location and calculate the signal travel time. From it calculate the distance. Assume speed of sound to be 343 *m/s*.
+
+## Solutions
+
+Send solutions [here](https://cloud.robotyka.ia.pw.edu.pl/index.php/s/sBEkJHFjSPzocQE)
